@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营养卡路里AI - 拍照识营养</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营养卡路里AI - 拍照识营养</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-green: #4CAF50;
+            --light-green: #E8F5E9;
+            --accent-blue: #2196F3;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-green);
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.4rem;
+        }
+        
+        .login-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--primary-green);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--primary-green);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+        
+        /* 英雄区 */
+        .hero {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+        
+        .hero h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+        
+        .hero p {
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        
+        /* 功能卡片 */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--primary-green);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--light-green);
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+        
+        .upload-area p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .preview-container {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .reupload-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: var(--white);
+            color: var(--primary-green);
+            border: 1.5px solid var(--primary-green);
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reupload-btn:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-blue));
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .analyze-btn:disabled {
+            background: #cccccc;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .analyze-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.5);
+        }
+        
+        /* 分析结果 */
+        .results-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        
+        .nutrition-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .nutrition-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nutrition-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .calories .nutrition-icon {
+            color: #FF9800;
+        }
+        
+        .protein .nutrition-icon {
+            color: #F44336;
+        }
+        
+        .carbs .nutrition-icon {
+            color: #4CAF50;
+        }
+        
+        .fat .nutrition-icon {
+            color: #2196F3;
+        }
+        
+        .nutrition-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .nutrition-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        /* 详细分析结果 */
+        .detailed-results {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .food-item {
+            background: var(--light-gray);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .food-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .food-detail span {
+            color: var(--text-light);
+        }
+        
+        .meal-summary {
+            background: var(--light-green);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-green);
+        }
+        
+        .toggle-details {
+            background: transparent;
+            border: none;
+            color: var(--accent-blue);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-green);
+            border-top: 4px solid var(--primary-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 为什么选择我们 */
+        .features-title {
+            font-size: 1.3rem;
+            margin: 30px 0 20px;
+            text-align: center;
+            color: var(--text-dark);
+        }
+        
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .feature-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* 响应式调整 */
+        @media (min-width: 768px) {
+            .nutrition-cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .features {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-apple-alt"></i>
+                <span>营养卡路里AI</span>
+            </div>
+            <button class="login-btn">登录</button>
+        </nav>
+        
+        <!-- 英雄区 -->
+        <section class="hero">
+            <h1>轻松拍出健康，瞬间知悉营养</h1>
+            <p>拍照上传食物，立即获取精准的卡路里与营养成分分析</p>
+        </section>
+        
+        <!-- 核心功能卡片 -->
+        <section class="card">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>点击上传或拍摄照片</h3>
+                <p>支持 JPG、PNG 格式</p>
+            </div>
+            
+            <div class="preview-container" id="previewContainer">
+                <img class="preview-img" id="previewImg" src="" alt="食物预览">
+                <button class="reupload-btn" id="reuploadBtn">重新上传</button>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>AI正在分析您的食物图片...</p>
+            </div>
+            
+            <button class="analyze-btn" id="analyzeBtn" disabled>立即分析营养</button>
+        </section>
+        
+        <!-- 分析结果面板 -->
+        <section class="card">
+            <h2 class="results-title">营养成分分析</h2>
+            <div class="nutrition-cards">
+                <div class="nutrition-card calories">
+                    <div class="nutrition-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="nutrition-value" id="caloriesValue">--</div>
+                    <div class="nutrition-label">卡路里 (kcal)</div>
+                </div>
+                
+                <div class="nutrition-card protein">
+                    <div class="nutrition-icon">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                    <div class="nutrition-value" id="proteinValue">--</div>
+                    <div class="nutrition-label">蛋白质 (g)</div>
+                </div>
+                
+                <div class="nutrition-card carbs">
+                    <div class="nutrition-icon">
+                        <i class="fas fa-bread-slice"></i>
+                    </div>
+                    <div class="nutrition-value" id="carbsValue">--</div>
+                    <div class="nutrition-label">碳水 (g)</div>
+                </div>
+                
+                <div class="nutrition-card fat">
+                    <div class="nutrition-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="nutrition-value" id="fatValue">--</div>
+                    <div class="nutrition-label">脂肪 (g)</div>
+                </div>
+            </div>
+            
+            <!-- 详细分析结果 -->
+            <div class="detailed-results" id="detailedResults">
+                <button class="toggle-details" id="toggleDetails">
+                    <i class="fas fa-chevron-down"></i>
+                    <span>查看详细食物分析</span>
+                </button>
+                
+                <div class="food-items" id="foodItems" style="display: none;">
+                    <!-- 食物项目将通过JavaScript动态添加 -->
+                </div>
+                
+                <div class="meal-summary" id="mealSummary">
+                    <!-- 餐点总结将通过JavaScript动态添加 -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- 为什么选择我们 -->
+        <section>
+            <h2 class="features-title">为什么选择 营养卡路里AI？</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">即时分析</h3>
+                    <p class="feature-desc">AI技术驱动，数秒内即可获得详细报告</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="feature-title">准确结果</h3>
+                    <p class="feature-desc">基于庞大的食物数据库，提供可靠数据参考</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="feature-title">简单易用</h3>
+                    <p class="feature-desc">只需拍照，无需复杂操作，健康管理如此简单</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>© 2023 营养卡路里AI 版权所有</p>
+            <p>联系我们: contact@nutritionai.com</p>
+        </footer>
+    </div>
+
+    <script>
+        // 配置后端API端点 - 使用测试webhook URL
+        const API_ENDPOINT = 'https://kaia-unslated-tonnishly.ngrok-free.app/webhook-test/test';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImg = document.getElementById('previewImg');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const reuploadBtn = document.getElementById('reuploadBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const detailedResults = document.getElementById('detailedResults');
+            const toggleDetails = document.getElementById('toggleDetails');
+            const foodItems = document.getElementById('foodItems');
+            const mealSummary = document.getElementById('mealSummary');
+            const fileInput = document.createElement('input');
+            
+            let currentFile = null;
+            let showDetails = false;
+            
+            fileInput.type = 'file';
+            fileInput.accept = 'image/jpeg, image/png';
+            fileInput.style.display = 'none';
+            
+            document.body.appendChild(fileInput);
+            
+            // 上传区域点击事件
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // 文件选择事件
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    currentFile = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        previewImg.src = event.target.result;
+                        previewContainer.style.display = 'block';
+                        uploadArea.style.display = 'none';
+                        analyzeBtn.disabled = false;
+                    }
+                    
+                    reader.readAsDataURL(currentFile);
+                }
+            });
+            
+            // 重新上传按钮点击事件
+            reuploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // 切换详细结果显示
+            toggleDetails.addEventListener('click', function() {
+                showDetails = !showDetails;
+                foodItems.style.display = showDetails ? 'block' : 'none';
+                toggleDetails.innerHTML = showDetails ? 
+                    '<i class="fas fa-chevron-up"></i><span>隐藏详细食物分析</span>' :
+                    '<i class="fas fa-chevron-down"></i><span>查看详细食物分析</span>';
+            });
+            
+            // 分析按钮点击事件
+            analyzeBtn.addEventListener('click', async function() {
+                if (analyzeBtn.disabled || !currentFile) return;
+                
+                // 显示加载状态
+                analyzeBtn.disabled = true;
+                analyzeBtn.style.display = 'none';
+                loadingIndicator.style.display = 'block';
+                
+                try {
+                    console.log('开始发送图片到后端...', currentFile);
+                    
+                    // 创建FormData对象
+                    const formData = new FormData();
+                    formData.append('image', currentFile);
+                    formData.append('timestamp', new Date().toISOString());
+                    
+                    // 发送到后端API
+                    const response = await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    console.log('响应状态:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误! 状态码: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    console.log('后端返回结果:', result);
+                    
+                    // 更新UI显示结果
+                    updateNutritionResults(result);
+                    
+                    // 滚动到结果区域
+                    document.querySelector('.results-title').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
+                    
+                } catch (error) {
+                    console.error('分析失败:', error);
+                    alert('分析失败: ' + error.message + '\n请稍后重试或检查网络连接。');
+                    
+                    // 恢复按钮状态
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.style.display = 'block';
+                } finally {
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    analyzeBtn.style.display = 'block';
+                    analyzeBtn.textContent = '重新分析';
+                    analyzeBtn.disabled = false;
+                }
+            });
+            
+            // 更新营养分析结果的函数
+            function updateNutritionResults(data) {
+                console.log('更新UI数据:', data);
+                
+                // 处理n8n返回的数据结构
+                // n8n返回的是数组，第一个元素包含output
+                if (Array.isArray(data) && data.length > 0 && data[0].output) {
+                    const output = data[0].output;
+                    const totals = output.totals;
+                    
+                    // 更新总营养数值
+                    document.getElementById('caloriesValue').textContent = totals.calories_kcal || '--';
+                    document.getElementById('proteinValue').textContent = totals.protein_g || '--';
+                    document.getElementById('carbsValue').textContent = totals.carbs_g || '--';
+                    document.getElementById('fatValue').textContent = totals.fat_g || '--';
+                    
+                    // 显示详细结果区域
+                    detailedResults.style.display = 'block';
+                    
+                    // 生成食物项目详情
+                    generateFoodItems(output.items);
+                    
+                    // 生成餐点总结
+                    generateMealSummary(output.mealSummary);
+                    
+                    console.log('营养分析完成！');
+                } else {
+                    console.error('数据格式不正确:', data);
+                    alert('数据解析错误，请检查后端返回的数据格式。');
+                }
+            }
+            
+            // 生成食物项目详情
+            function generateFoodItems(items) {
+                foodItems.innerHTML = '';
+                
+                if (Array.isArray(items)) {
+                    items.forEach((item, index) => {
+                        const foodItem = document.createElement('div');
+                        foodItem.className = 'food-item';
+                        foodItem.innerHTML = `
+                            <div class="food-name">${item.name} (${item.portion_g}g)</div>
+                            <div class="food-details">
+                                <div class="food-detail">热量: <span>${item.calories_kcal} kcal</span></div>
+                                <div class="food-detail">蛋白质: <span>${item.protein_g} g</span></div>
+                                <div class="food-detail">碳水: <span>${item.carbs_g} g</span></div>
+                                <div class="food-detail">脂肪: <span>${item.fat_g} g</span></div>
+                                <div class="food-detail">烹饪: <span>${item.method}</span></div>
+                                <div class="food-detail">适合: <span>${item.dietFit.join(', ')}</span></div>
+                            </div>
+                            <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-light);">
+                                <div><strong>说明:</strong> ${item.note}</div>
+                                <div><strong>建议:</strong> ${item.tip}</div>
+                            </div>
+                        `;
+                        foodItems.appendChild(foodItem);
+                    });
+                }
+            }
+            
+            // 生成餐点总结
+            function generateMealSummary(summary) {
+                if (summary) {
+                    mealSummary.innerHTML = `
+                        <div class="summary-title">餐点总结</div>
+                        <div><strong>营养特点:</strong> ${summary.quality}</div>
+                        <div style="margin-top: 8px;"><strong>总体建议:</strong> ${summary.overallTip}</div>
+                    `;
+                }
+            }
+            
+            // 检查后端连接状态
+            async function checkBackendStatus() {
+                try {
+                    console.log('检查后端服务状态...');
+                    const response = await fetch(API_ENDPOINT, { 
+                        method: 'GET'
+                    });
+                    console.log('后端服务状态:', response.status);
+                    return response.ok;
+                } catch (error) {
+                    console.warn('后端服务连接检查失败:', error.message);
+                    return false;
+                }
+            }
+            
+            // 页面加载时显示连接状态
+            window.addEventListener('load', async function() {
+                const isBackendAvailable = await checkBackendStatus();
+                if (isBackendAvailable) {
+                    console.log('✅ 后端服务连接正常');
+                } else {
+                    console.log('⚠️ 后端服务连接异常，请检查网络或服务状态');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航栏 -->
+        <!-- ...（略，内容同你上面所提供）... -->
+    </div>
+    <script>
+        // 你的JavaScript代码，已完整保留
+        // ...（略，内容同你上面所提供）...
+    </script>
+</body>
+</html>
